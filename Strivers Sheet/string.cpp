@@ -362,6 +362,38 @@ int minDeletionSize(vector<string>& strs) {
     }
     return count;
 }
+
+/*Input: s = "cdbcbbaaabab", x = 4, y = 5
+Output: 19
+Explanation:
+- Remove the "ba" underlined in "cdbcbbaaabab". Now, s = "cdbcbbaaab" and 5 points are added to the score.
+- Remove the "ab" underlined in "cdbcbbaaab". Now, s = "cdbcbbaa" and 4 points are added to the score.
+- Remove the "ba" underlined in "cdbcbbaa". Now, s = "cdbcba" and 5 points are added to the score.
+- Remove the "ba" underlined in "cdbcba". Now, s = "cdbc" and 5 points are added to the score.
+Total score = 5 + 4 + 5 + 5 = 19.*/
+int removePairs(string& s, char first, char sec, int gain){
+    string temp="";
+    int result=0;
+    for(char ch:s){
+        if(!temp.empty() && ch==sec && temp.back()==first ){
+            temp.pop_back();
+            result+=gain;
+        }else temp.push_back(ch);
+    }
+    s=temp;
+    return result;
+}
+int maximumGain(string s, int x, int y) {
+    int result=0;
+    if(x>y){
+        result+=removePairs(s,'a','b',x);
+        result+=removePairs(s,'b','a',y);
+    }else{
+        result+=removePairs(s,'b','a',y);
+        result+=removePairs(s,'a','b',x);
+    }
+    return result;
+}
 int main(){
     
 }
