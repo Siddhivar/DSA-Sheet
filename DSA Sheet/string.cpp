@@ -19,6 +19,63 @@ string removeOuterParentheses(string s) {
     }
     return result;
 }
+/*Input: s = "leetcode"
+Output: "leotcede"*/
+string reverseVowels(string s) {
+    int i=0, j=s.length()-1;
+    string vowels="aeiouAEIOU";
+    while(i<=j){
+        while(i<j && vowels.find(s[i])==string::npos){
+            i++;
+        }
+        while(i<j && vowels.find(s[j])==string::npos){
+            j--;
+        }
+        swap(s[i],s[j]);
+        i++;
+        j--;
+    }
+    return s;
+}
+
+/*Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]*/
+int removeDuplicates(vector<int>& nums) {
+    int i=0;
+    for(int j=1;j<nums.size();j++){
+        if(nums[j]!=nums[i]){
+            i++;
+            nums[i]=nums[j];
+        }
+    }
+    return i+1;
+}
+
+/*Given a string s, return true if the s can be palindrome after deleting at most one character from it.*/
+bool isPalindrome(string s, int l, int r){
+    while(l<r){
+        if(s[l]!=s[r]){
+            return false;
+        }
+        l++;
+        r--;
+    }
+    return true;
+}
+bool validPalindrome(string s) {
+    int i=0;
+    int j=s.length()-1;
+    while(i<j){
+        if(s[i]==s[j]){
+            i++;
+            j--;
+        }else{
+            return isPalindrome(s,i+1,j)||isPalindrome(s,i,j-1);
+        }
+    }
+    return true;
+}
+
 string reverseWords(string s) {
     stringstream ss(s);
     string word;

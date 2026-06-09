@@ -9,6 +9,17 @@ void reverseArray(vector<int> &arr, int start, int end){
     reverseArray(arr, start + 1, end - 1);
 }
 
+bool isPalindrome(int x) {
+    if(x<0) return false;
+    int temp=x;
+    long long rev=0;
+    while(temp>0){
+        int rem=temp%10;
+        rev=rev*10+rem;
+        temp=temp/10;
+    }
+    return rev==x;
+}
 bool checkPalindrome(string s, int start, int end){
     if (start >= end)
         return true;
@@ -112,6 +123,26 @@ bool checkArrayIsSorted2(int arr[], int n, int index)
     if (arr[index] < arr[index - 1])
         return false;
     return checkArrayIsSorted2(arr, n, index + 1);
+}
+
+/*Input: nums = [10,4,8,3]
+Output: [15,1,11,22]
+Explanation: The array leftSum is [0,10,14,22] and the array rightSum is [15,11,3,0].
+The array answer is [|0 - 15|,|10 - 11|,|14 - 3|,|22 - 0|] = [15,1,11,22].*/
+vector<int> leftRightDifference(vector<int>& nums) {
+    int totalSum=0;
+    for(int x:nums){
+        totalSum+=x;
+    }
+    vector<int>result;
+    int curr=0;
+    for(int x:nums){
+        int left=curr;
+        curr+=x;
+        int right=totalSum-curr;
+        result.push_back(abs(right-left));
+    }
+    return result;
 }
 
 int removeDuplicates(int arr[], int n)
@@ -345,6 +376,34 @@ vector<vector<int>> threeSum(vector<int>& nums) {
                 j++;
             }else{
                 k--;
+            }
+        }
+    }
+    return result;
+}
+
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    int n=nums.size();
+    vector<vector<int>>result;
+    sort(nums.begin(),nums.end());
+    for(int i=0;i<n-3;i++){
+        if(i>0 && nums[i]==nums[i-1]) continue;
+        for(int j=i+1;j<n-2;j++){
+            if(j>i+1 && nums[j]==nums[j-1]) continue;
+            int k=j+1,l=n-1;
+            while(k<l){
+                long long sum=1LL*nums[i]+nums[j]+nums[k]+nums[l];
+                if(sum==target){
+                    result.push_back({nums[i],nums[j],nums[k],nums[l]});
+                    k++;
+                    l--;
+                    while(k<l && nums[k]==nums[k-1])k++;
+                    while(k<l && nums[l]==nums[l+1])l--;
+                }else if(sum<target){
+                    k++;
+                }else{
+                    l--;
+                }
             }
         }
     }
@@ -699,6 +758,88 @@ int findJudge(int n, vector<vector<int>>& trust) {
         }
     }
     return -1;
+}
+
+/*Input: nums = [3,5,6,7], target = 9
+Output: 4
+Explanation: There are 4 subsequences that satisfy the condition.
+[3] -> Min value + max value <= target (3 + 3 <= 9)
+[3,5] -> (3 + 5 <= 9)
+[3,5,6] -> (3 + 6 <= 9)
+[3,6] -> (3 + 6 <= 9)*/
+int numSubseq(vector<int>& nums, int target) {
+    const int MOD=1e9+7;
+    sort(nums.begin(),nums.end());
+    vector<long long>pow2(nums.size());
+    pow2[0]=1;
+    for(int i=1;i<nums.size();i++){
+        pow2[i]=(pow2[i-1]*2)%MOD;
+    }
+    int l=0;
+    int r=nums.size()-1;
+    long long subseq=0;
+    while(l<=r){
+        if(nums[l]+nums[r]<=target){
+            subseq=(subseq+pow2[r-l])%MOD;
+            l++;
+        }else{
+            r--;
+        }
+    }
+    return int(subseq);
+}
+
+/*Input: nums = [1,2,1,3]
+Output: 2
+Explanation: The 2 possible good partitions are: ([1,2,1], [3]) and ([1,2,1,3]).*/
+int numberOfGoodPartitions(vector<int>& nums) {
+    int n=nums.size();
+    const int MOD=1e9+7;
+    unordered_map<int,int>last;
+    for(int i=0;i<n;i++){
+        last[nums[i]]=i;
+    }
+    int end=0;
+    int group=0;
+    for(int i=0;i<n;i++){
+        end=max(end,last[nums[i]]);
+        if(i==end){
+            group++;
+        }
+    }
+    long long ans=1;
+    for(int i=0;i<group-1;i++){
+        ans=(ans*2)%MOD;
+    }
+    return (int)ans;
+}
+
+/*Input: arr = [3,2,4,1]
+Output: [4,2,4,3]
+Explanation: 
+We perform 4 pancake flips, with k values 4, 2, 4, and 3.
+Starting state: arr = [3, 2, 4, 1]
+After 1st flip (k = 4): arr = [1, 4, 2, 3]
+After 2nd flip (k = 2): arr = [4, 1, 2, 3]
+After 3rd flip (k = 4): arr = [3, 2, 1, 4]
+After 4th flip (k = 3): arr = [1, 2, 3, 4], which is sorted.*/
+vector<int> pancakeSort(vector<int>& arr) {
+    int n=arr.size();
+    vector<int>ans;
+    for(int size=n;size>1;size--){
+        int maxIdx=0;
+        for(int i=1;i<size;i++){
+            if(arr[i]>arr[maxIdx]){
+                maxIdx=i;
+            }
+        }
+        if (maxIdx==size-1) continue;
+        reverse(arr.begin(),arr.begin()+maxIdx+1);
+        ans.push_back(maxIdx+1);
+        reverse(arr.begin(),arr.begin()+size);
+        ans.push_back(size);
+    }
+    return ans;
 }
 int main()
 {

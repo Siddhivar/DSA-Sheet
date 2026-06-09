@@ -386,6 +386,55 @@ int sumNumbers(TreeNode* root) {
     int temp=0;
     return findSum(root,temp);
 }
+
+/*Input: descriptions = [[20,15,1],[20,17,0],[50,20,1],[50,80,0],[80,19,1]]
+Output: [50,20,80,15,17,19]
+Explanation: The root node is the node with value 50 since it has no parent.
+The resulting binary tree is shown in the diagram.*/
+TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
+    unordered_map<int, TreeNode*>mp;
+    unordered_set<int>childNodes;
+    for(auto &d:descriptions){
+        int parent=d[0];
+        int child=d[1];
+        int isLeft=d[2];
+        if(mp.find(parent)==mp.end()){
+            mp[parent]=new TreeNode(parent);
+        }
+        if(mp.find(child)==mp.end()){
+            mp[child]=new TreeNode(child);
+        }
+        if(isLeft==1){
+            mp[parent]->left=mp[child];
+        }else{
+            mp[parent]->right=mp[child];
+        }
+        childNodes.insert(child);
+    }
+    for(auto &d:descriptions){
+        int parent=d[0];
+        if(childNodes.find(parent)==childNodes.end()){
+            return mp[parent];
+        }
+    }
+    return nullptr;
+}
+
+/*Input: root = [5,3,6,2,4,null,7], k = 9
+Output: true */
+unordered_set<int>elem;
+bool dfs(TreeNode* root, int k){
+    if(root==nullptr) return false;
+    if(elem.count(k-root->val)){
+        return true;
+    }
+    elem.insert(root->val);
+    return dfs(root->left, k) ||dfs(root->right,k);
+
+}
+bool findTarget(TreeNode* root, int k) {
+    return dfs(root,k);
+}
 int main(){
     return 0;
 }
