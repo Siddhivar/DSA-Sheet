@@ -62,6 +62,45 @@ string breakPalindrome(string palindrome) {
     palindrome[s-1]='b';
     return palindrome;
 }
+/*multiply the number on display by 2, or
+subtract 1 from the number on display.*/
+int brokenCalc(int startValue, int target) {
+    int operations=0;
+    while(target>startValue){
+        if(target%2==0){
+            target/=2;
+        }else{
+            target++;
+        }
+        operations++;
+    }
+    return operations+(startValue-target);
+}
+
+/*Input: colors = "abaac", neededTime = [1,2,3,4,5]
+Output: 3
+Explanation: In the above image, 'a' is blue, 'b' is red, and 'c' is green.
+Bob can remove the blue balloon at index 2. This takes 3 seconds.
+There are no longer two consecutive balloons of the same color. Total time = 3.*/
+int minCost(string colors, vector<int>& neededTime) {
+    int n=colors.size();
+    int totalTime=0;
+    for(int t:neededTime){
+        totalTime+=t;
+    }
+    int keep=0;
+    int i=0;
+    while(i<n){
+        char ballon=colors[i];
+        int time=0;
+        while(i<n && colors[i]==ballon){
+            time=max(time,neededTime[i]);
+            i++;
+        }
+        keep+=time;
+    }
+    return totalTime-keep;
+}
 int main(){
     return 0;
 }

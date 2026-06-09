@@ -125,6 +125,24 @@ bool checkArrayIsSorted2(int arr[], int n, int index)
     return checkArrayIsSorted2(arr, n, index + 1);
 }
 
+/*Input: num = 9669
+Output: 9969*/
+int maximum69Number (int num) {
+    int temp=num;
+    int pos=-1;
+    int place=1;
+    while(temp){
+        if(temp%10==6){
+            pos=place;
+        }
+        temp/=10;
+        place*=10;
+    }
+    if(pos!=-1){
+        num+=3*pos;
+    }
+    return num;
+}
 /*Input: nums = [10,4,8,3]
 Output: [15,1,11,22]
 Explanation: The array leftSum is [0,10,14,22] and the array rightSum is [15,11,3,0].
