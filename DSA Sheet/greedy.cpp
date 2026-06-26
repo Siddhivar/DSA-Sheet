@@ -101,6 +101,64 @@ int minCost(string colors, vector<int>& neededTime) {
     }
     return totalTime-keep;
 }
+
+/*Input: capacity = [2,3,4,5], rocks = [1,2,4,4], additionalRocks = 2
+Output: 3
+Explanation:
+Place 1 rock in bag 0 and 1 rock in bag 1.
+The number of rocks in each bag are now [2,3,4,4].
+Bags 0, 1, and 2 have full capacity.
+There are 3 bags at full capacity, so we return 3.
+It can be shown that it is not possible to have more than 3 bags at full capacity.
+Note that there may be other ways of placing the rocks that result in an answer of 3.*/
+int maximumBags(vector<int>& capacity, vector<int>& rocks, int additionalRocks) {
+    int n=capacity.size();
+    int fullCapacity=0;
+    vector<int>gap;
+    for(int i=0;i<n;i++){
+        gap.push_back(capacity[i]-rocks[i]);
+    }
+    sort(gap.begin(),gap.end());
+    for(int i=0;i<gap.size();i++){
+        if(gap[i]==0){
+            fullCapacity++;
+        }else{
+            if(additionalRocks>=gap[i]){
+                additionalRocks-=gap[i];
+                fullCapacity++;
+            }else{
+                break;
+            }
+        }
+    }
+    return fullCapacity;
+}
+
+/*Input: tasks = [2,2,3,3,2,4,4,4,4,4]
+Output: 4
+Explanation: To complete all the tasks, a possible plan is:
+- In the first round, you complete 3 tasks of difficulty level 2. 
+- In the second round, you complete 2 tasks of difficulty level 3. 
+- In the third round, you complete 3 tasks of difficulty level 4. 
+- In the fourth round, you complete 2 tasks of difficulty level 4.  
+It can be shown that all the tasks cannot be completed in fewer than 4 rounds, so the answer is 4.*/
+int minimumRounds(vector<int>& tasks) {
+    unordered_map<int,int>mp;
+    for(int t:tasks){
+        mp[t]++;
+    }
+    int rounds=0;
+    for(auto it:mp){
+        int count=it.second;
+        if(count==1) return -1;
+        if(count%3==0){
+            rounds+=count/3;
+        }else{
+            rounds+=(count/3)+1;
+        }
+    }
+    return rounds;
+}
 int main(){
     return 0;
 }

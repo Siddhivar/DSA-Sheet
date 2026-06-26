@@ -165,6 +165,37 @@ int add(int val) {
     }
     return pq.top();
 }
+
+/*Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+Output: [[1,2],[1,4],[1,6]]
+Explanation: The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+*/
+typedef pair<int,pair<int,int>>P;
+vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+    vector<vector<int>>result;
+    priority_queue<P,vector<P>, greater<P>>pq;
+    set<pair<int,int>>visited;
+    pq.push({nums1[0]+nums2[0],{0,0}});
+    visited.insert({0,0});
+    while(k-- && !pq.empty()){
+        auto curr=pq.top();
+        pq.pop();
+        int idx1=curr.second.first;
+        int idx2=curr.second.second;
+        result.push_back({nums1[idx1],nums2[idx2]});
+        //push(idx1,idx2+1)
+        if(idx1<nums1.size() && idx2+1<nums2.size() && visited.find({idx1,idx2+1})==visited.end()){
+            pq.push({nums1[idx1]+nums2[idx2+1],{idx1,idx2+1}});
+            visited.insert({idx1,idx2+1});
+        }
+        //push(idx1+1,idx2)
+        if(idx1+1<nums1.size() && idx2<nums2.size() && visited.find({idx1+1,idx2})==visited.end()){
+            pq.push({nums1[idx1+1]+nums2[idx2],{idx1+1,idx2}});
+            visited.insert({idx1+1,idx2});
+        }
+    }
+    return result;
+}
 int main(){
     return 0;
 }

@@ -859,6 +859,84 @@ vector<int> pancakeSort(vector<int>& arr) {
     }
     return ans;
 }
+
+/*Input: s = "PAYPALISHIRING", numRows = 4
+Output: "PINALSIGYAHRPI"
+Explanation:
+P     I    N
+A   L S  I G
+Y A   H R
+P     I*/
+string convert(string s, int numRows) {
+    if(numRows==1 || numRows>s.size()){
+        return s;
+    }
+    vector<string>rows(numRows);
+    int currRow=0;
+    bool goingDown=true;
+    for(char ch:s){
+        rows[currRow]+=ch;
+        if(currRow==0){
+            goingDown=true;
+        }else if(currRow==numRows-1){
+            goingDown=false;
+        }
+        if(goingDown){
+            currRow+=1;
+        }else{
+            currRow-=1;
+        }
+    }
+    string ans;
+    for(string &row:rows){
+        ans+=row;
+    }
+    return ans;
+}
+
+/*Input: nums = [1,3,0,0,2,0,0,4]
+Output: 6
+Explanation: 
+There are 4 occurrences of [0] as a subarray.
+There are 2 occurrences of [0,0] as a subarray.
+There is no occurrence of a subarray with a size more than 2 filled with 0. Therefore, we return 6.*/
+long long zeroFilledSubarray(vector<int>& nums) {
+    long long ans=0;
+    long long curr=0;
+    for(int x:nums){
+        if(x==0){
+            curr++;
+            ans+=curr;
+        }else{
+            curr=0;
+        }
+    }
+    return ans;
+}
+
+/*Input: nums = [6,0,8,2,1,5]
+Output: 4
+Explanation: The maximum width ramp is achieved at (i, j) = (1, 5): nums[1] = 0 and nums[5] = 5.*/
+int maxWidthRamp(vector<int>& nums) {
+    int n=nums.size();
+    vector<int>maxRight(n);
+    maxRight[n-1]=nums[n-1];
+    for(int i=n-2;i>=0;i--){
+        maxRight[i]=max(nums[i],maxRight[i+1]);
+    }
+    int i=0;
+    int j=0;
+    int maxRamp=0;
+    while(i<n && j<n){
+        if(nums[i]<=maxRight[j]){
+            maxRamp=max(maxRamp,j-i);
+            j++;
+        }else{
+            i++;
+        }
+    }
+    return maxRamp;
+}
 int main()
 {
     vector<int>arr={4,1,2,1,2};

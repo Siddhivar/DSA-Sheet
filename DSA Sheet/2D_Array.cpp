@@ -1,5 +1,18 @@
 #include <bits/stdc++.h>
 using namespace std;
+
+//Pascal Triangle
+vector<vector<int>> generate(int numRows) {
+    vector<vector<int>>result(numRows);
+    for(int i=0;i<numRows;i++){
+        result[i]=vector<int>(i+1,1);
+        for(int j=1;j<i;j++){
+            result[i][j]=result[i-1][j]+result[i-1][j-1];
+        }
+    }
+    return result;
+}
+
 /*1.Transpose
 2.Reverse*/
 void rotate(vector<vector<int>>& matrix) {
@@ -13,6 +26,7 @@ void rotate(vector<vector<int>>& matrix) {
         reverse(matrix[i].begin(), matrix[i].end());
     }
 }
+//Spiral Matrix I
 vector<int> spiralOrder(vector<vector<int>>& matrix) {
     vector<int>result;
     int left=0, right=matrix[0].size()-1;
@@ -42,6 +56,39 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
             }
         }
         left++;
+    }
+    return result;
+}
+
+/* Spiral Matrix II
+Input: n = 3
+Output: [[1,2,3],[8,9,4],[7,6,5]]*/
+vector<vector<int>> generateMatrix(int n) {
+    vector<vector<int>>result(n, vector<int>(n));
+    int left=0,right=n-1;
+    int top=0,down=n-1;
+    int val=1;
+    while(top<=down && left<=right){
+        for(int i=left;i<=right;i++){
+            result[top][i]=val++;
+        }
+        top++;
+        for(int i=top;i<=down;i++){
+            result[i][right]=val++;
+        }
+        right--;
+        if(top<=down){
+            for(int i=right;i>=left;i--){
+                result[down][i]=val++;
+            }
+            down--;
+        }
+        if(left<=right){
+            for(int i=down;i>=top;i--){
+                result[i][left]=val++;
+            }
+            left++;
+        }
     }
     return result;
 }
@@ -212,6 +259,110 @@ bool isValidSudoku(vector<vector<char>>& board) {
         }
     }
     return true;
+}
+//SC->O(1)
+void setZeroes(vector<vector<int>>& matrix) {
+    int r=matrix.size();
+    int c=matrix[0].size();
+    bool firstCol=false;
+    for(int i=0;i<r;i++){
+        if(matrix[i][0]==0){
+            firstCol=true;
+        }
+        for(int j=1;j<c;j++){
+            if(matrix[i][j]==0){
+                matrix[i][0]=0;
+                matrix[0][j]=0;
+            }
+        }
+    }
+    for(int i=r-1;i>=0;i--){
+        for(int j=c-1;j>=1;j--){
+            if(matrix[i][0]==0||matrix[0][j]==0){
+                matrix[i][j]=0;
+            }
+        }
+        if(firstCol){
+            matrix[i][0]=0;
+        }
+    }
+}
+
+/*Input: grid = [[1,1,1,1,1,1,1,0],[1,0,0,0,0,1,1,0],[1,0,1,0,1,1,1,0],[1,0,0,0,0,1,0,1],[1,1,1,1,1,1,1,0]]
+Output: 2
+Explanation: 
+Islands in gray are closed because they are completely surrounded by water (group of 1s).*/
+bool dfs(vector<vector<int>>& grid,int i, int j){
+    int m=grid.size();
+    int n=grid[0].size();
+    if(i<0 || i>=m || j<0 || j>=n) return false;
+    if(grid[i][j]==1) return true;
+    grid[i][j]=1;
+    bool up=dfs(grid,i-1,j);
+    bool down=dfs(grid,i+1,j);
+    bool left=dfs(grid,i,j-1);
+    bool right=dfs(grid,i,j+1);
+    return (up && down && left && right);
+}
+int closedIsland(vector<vector<int>>& grid) {
+    int m=grid.size();
+    int n=grid[0].size();
+    int ans=0;
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(grid[i][j]==0){
+                if(dfs(grid,i,j)){
+                    ans++;
+                }
+            }
+        }
+    }
+    return ans;
+}
+
+/*Input: grid = [[0,0,0,0],[1,0,1,0],[0,1,1,0],[0,0,0,0]]
+Output: 3
+Explanation: There are three 1s that are enclosed by 0s, and one 1 that is not enclosed because its on the boundary.*/
+void dfs(vector<vector<int>>& grid, int i, int j){
+    int m=grid.size();
+    int n=grid[0].size();
+    if(i<0 || i>=m || j<0 || j>=n) return;
+    if(grid[i][j]==0) return;
+    grid[i][j]=0;
+    dfs(grid,i-1,j);
+    dfs(grid,i+1,j);
+    dfs(grid,i,j-1);
+    dfs(grid,i,j+1);
+
+}
+int numEnclaves(vector<vector<int>>& grid) {
+    int m=grid.size();
+    int n=grid[0].size();
+    for(int i=0;i<m;i++){
+        if(grid[i][0]==1){
+            dfs(grid,i,0);
+        }
+        if(grid[i][n-1]==1){
+            dfs(grid,i,n-1);
+        }
+    }
+    for(int j=0;j<n;j++){
+        if(grid[0][j]==1){
+            dfs(grid,0,j);
+        }
+        if(grid[m-1][j]==1){
+            dfs(grid,m-1,j);
+        }
+    }
+    int count=0;
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(grid[i][j]==1){
+                count++;
+            }
+        }
+    }
+    return count;
 }
 int main(){
 
